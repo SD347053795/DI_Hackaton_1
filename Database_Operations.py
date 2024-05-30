@@ -2,7 +2,7 @@ import csv
 import psycopg2
 
 def database_exists(db_name, user, password, host, port):
-    conn = psycopg2.connect(dbname='International_Debt_Data', user= 'postgres', password= 'admin123', host='localhost', port= '5432')
+    conn = psycopg2.connect(dbname='postgres', user=user, password=password, host=host, port=port)
     cursor = conn.cursor()
     cursor.execute("SELECT 1 FROM pg_database WHERE datname = %s", (db_name,))
     exists = cursor.fetchone()
@@ -11,7 +11,7 @@ def database_exists(db_name, user, password, host, port):
     return exists is not None
 
 def create_database(db_name, user, password, host, port):
-    conn = psycopg2.connect(dbname='International_Debt_Data', user= 'postgres', password= 'admin123', host='localhost', port= '5432')
+    conn = psycopg2.connect(dbname='postgres', user=user, password=password, host=host, port=port)
     conn.autocommit = True
     cursor = conn.cursor()
     if not database_exists(db_name, user, password, host, port):
@@ -21,7 +21,7 @@ def create_database(db_name, user, password, host, port):
     conn.close()
 
 def create_table(db_name, user, password, host, port):
-    conn = psycopg2.connect(dbname='International_Debt_Data', user= 'postgres', password= 'admin123', host='localhost', port= '5432')
+    conn = psycopg2.connect(dbname=db_name, user=user, password=password, host=host, port=port)
     cursor = conn.cursor()
     create_table_query = """
     CREATE TABLE IF NOT EXISTS International_Debt_Statistics (
@@ -39,7 +39,7 @@ def create_table(db_name, user, password, host, port):
     conn.close()
 
 def upload_csv_to_postgresql(csv_file_path, db_name, user, password, host, port):
-    conn = psycopg2.connect(dbname='International_Debt_Data', user= 'postgres', password= 'admin123', host='localhost', port= '5432')
+    conn = psycopg2.connect(dbname=db_name, user=user, password=password, host=host, port=port)
     cursor = conn.cursor()
 
     with open(csv_file_path, mode='r') as file:
@@ -63,7 +63,7 @@ def upload_csv_to_postgresql(csv_file_path, db_name, user, password, host, port)
     conn.close()
 
 def get_debt_by_country(country_name, db_name, user, password, host, port):
-    conn = psycopg2.connect(dbname='International_Debt_Data', user= 'postgres', password= 'admin123', host='localhost', port= '5432')
+    conn = psycopg2.connect(dbname=db_name, user=user, password=password, host=host, port=port)
     cursor = conn.cursor()
     query = "SELECT Total_External_Debt, Year FROM International_Debt_Statistics WHERE Country_Name = %s"
     cursor.execute(query, (country_name,))
@@ -71,32 +71,3 @@ def get_debt_by_country(country_name, db_name, user, password, host, port):
     cursor.close()
     conn.close()
     return result
-
-def main():
-    db_name = 'International_Debt_Data'
-    user = 'postgres'
-    password = 'admin123'
-    host = 'localhost'
-    port = '5432'
-
-    create_database(db_name, user, password, host, port)
-    create_table(db_name, user, password, host, port)
-    upload_csv_to_postgresql(r"C:\Users\Shmuel\Desktop\DI_Hackatons\DI_Hackaton_1\World_Debt_Statistics.csv", db_name,
-                             user, password, host, port)
-
-    while True:
-        country = input("Enter the country name (or enter 1 to exit): ")
-        if country == '1':
-            print("Exiting the program.")
-            break
-
-        result = get_debt_by_country(country, db_name, user, password, host, port)
-        if result:
-            total_debt, year = result
-            print(f"Total External Debt for {country}: {total_debt}, Year: {year}")
-        else:
-            print("Sorry, that country does not exist, please check your spelling.")
-
-
-if __name__ == "__main__":
-    main()
