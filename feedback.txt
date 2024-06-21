@@ -1,0 +1,11 @@
+hackathon feedback
+
+- Technology 6/8 : use of PostgreSQL for database management, CSV handling for data upload, and several utility functions to interact with the database. The implementation shows a good integration of database operations and file handling but lacks an API or advanced data analysis tools.
+- Completion 8/8 : You achieved your primary goal, and your project is correctly creating the database and tables, uploading CSV data to PostgreSQL, and retrieving data based on user input.
+- Learning 6/8 : significant learning effort, including the use of psycopg2 for PostgreSQL interactions, handling CSV data, and implementing database operations. However, the learning scope could be expanded by integrating API or other libraries to enhance your project.
+
+Total : 20/24
+
+Very good project ! You demonstrated good proficiency in database management and data handling, with room for further exploration or implementation of new features such as using other libraries or API.
+
+Well done !
